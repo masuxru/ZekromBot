@@ -1,0 +1,22 @@
+const { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const ExtendedClient = require('../../../class/ExtendedClient');
+const afkschema = require('../../../schemas/AFKSchema');
+
+module.exports = {
+    structure: new SlashCommandBuilder()
+        .setName('ai')
+        .setDescription('ask a question to the bot')
+        .addStringOption((opt) =>
+            opt.setName('prompt')
+                .setDescription('The question you want to ask')
+                .setRequired(true)
+        ),
+    /**
+     * @param {ExtendedClient} client 
+     * @param {ChatInputCommandInteraction} interaction 
+     */
+    run: async (client, interaction) => {
+
+
+    }
+};

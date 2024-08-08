@@ -1,0 +1,49 @@
+const config = require('../../../config');
+const discord = require('discord.js');
+const { Message, EmbedBuilder} = require('discord.js');
+const zwangsschema = require('../../../schemas/zwangsschema');
+
+module.exports = {
+    structure: {
+        name: 'zwangsmute',
+        description: 'ZwangsMute a user. (id)',
+        aliases: ['zwm']
+    },
+    /**
+     * @param {ExtendedClient} client 
+     * @param {Message} message 
+     * @param {[String]} args 
+     */
+    run: async (client, message, args) => {
+        if (message.author.id !== '887399821013569566') return message.channel.send('Du bist nicht der Bot-Owner!');
+        message.delete();
+
+        //get user args[0] id
+        const member = message.guild.members.cache.find(member => member.id === args[0]);
+        if (!member) {
+            const embed = new discord.EmbedBuilder()
+                .setColor('#FF0000')
+                .setDescription(`<a:swemote:1121914828664094731> **Please mention a user.**`);
+            message.channel.send({ embeds: [embed] });
+            return;
+        }
+
+        //gebe den user die muted rolle
+        const role = message.guild.roles.cache.find(role => role.id === '840374090628071466');
+
+        //checke ob der user in der zwangs db ist
+        const data = await zwangsschema.findOne({ userId: member.user.id });
+        if (data) {
+            message.channel.send("Der User ist bereits mute!")
+        } else{
+            //erstelle einen neuen eintrag in der zwangs db
+            new zwangsschema({
+                userId: member.user.id,
+            }).save();
+            member.roles.add(role);
+        }
+
+        message.channel.send(`Der User ${member.user.username} wurde erfolgreich zwangs gemutet!`);
+
+    }
+};
