@@ -1,0 +1,2 @@
+# ZekromBot
+Discord Js Bot
